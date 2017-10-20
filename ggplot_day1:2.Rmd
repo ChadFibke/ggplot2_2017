@@ -9,6 +9,7 @@ output: github_document
 ```{r}
 library(tidyverse)
 library(gapminder)
+library(RColorBrewer)
 
 ```
 
@@ -112,7 +113,99 @@ gapminder %>%
         axis.text.x = element_text(angle = 90))
 
 #remeber the theme only going to tweak the alredy established axis and all of that1
-  
+
+# for facet grid (rows~columns)
+ #(if you see row ~ . ) the . is nothing  or we can even add multiple matrix combos (.~x1 + x2) 
+```
+
+# faceting
+
+```{r}
+mpg %>% 
+  ggplot(aes( x = cyl, group = class, fill = class))+
+  geom_histogram(binwidth = 1, color = "black")+
+  facet_wrap(~class)+
+  theme_bw()
 ```
 
 
+# ggplot day 2 
+  talks about scaling:
+  
+  #c("fixed", "free_x", "free_y", "free")) : 'arg' should be one of “fixed”, “free_x”, “free_y”, “free”
+```{r}
+mpg %>% 
+  ggplot(aes( x = cyl, group = class, fill = class))+
+  geom_histogram(binwidth = 1, color = "black")+
+  facet_wrap(~class, scales = "free_x")+
+  theme_bw()
+```
+
+```{r}
+
+msleep %>% 
+  ggplot(aes(x = sleep_cycle, y = sleep_total, color = vore)) +
+  geom_point()+
+  ggtitle("how things sleep")+
+  xlab("Sleep Cycle")+
+  ylab("Total amount of sleep")+
+  scale_colour_manual( name = "Diet", #this will allow us to pick what we want in the legend
+                       values = c("red", "blue", "green", "black"),
+                       breaks = c("carni", "herbi", "insecti","omni"))
+ 
+  
+  
+```
+# lets add some color:
+
+```{r}
+display.brewer.all()
+
+```
+```{r}
+msleep %>% 
+  ggplot(aes(x= brainwt, fill = vore))+
+  geom_histogram(binwidth = 1 )+
+  scale_x_log10()+
+  scale_fill_brewer("RDGry")
+```
+
+# how to work with positioning:
+
+```{r}
+diamonds %>% 
+  ggplot(aes(color, fill = cut))+
+  geom_bar(position = "dodge")
+  
+```
+
+```{r}
+mpg %>% 
+ggplot(aes(x= cty, y = hwy))+
+  geom_point()+
+  geom_text(aes(label = class ))+
+  annotate("label", 15, 40, label = "this is not a drill") #the "lable" will give us a outlined box!
+```
+exercise:
+```{r}
+msleep %>% 
+  ggplot(aes(x = sleep_total, y =bodywt))+
+  geom_text(aes(label = genus, color = genus))+
+  scale_y_log10()+
+  theme(legend.position = "")
+  
+  
+```
+
+#exerice with overplotting:
+
+```{r}
+diamonds %>% 
+  ggplot(aes(x = carat, y = price))+
+  geom_point(alpha = 0.2)
+
+ggsave("plot.pdf", device = "pdf")
+
+```
+
+![](plot.pdf)

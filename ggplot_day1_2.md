@@ -21,6 +21,7 @@ library(tidyverse)
 
 ``` r
 library(gapminder)
+library(RColorBrewer)
 ```
 
 Day.1 Oct13
@@ -206,4 +207,121 @@ gapminder %>%
 
 ``` r
 #remeber the theme only going to tweak the alredy established axis and all of that1
+
+# for facet grid (rows~columns)
+ #(if you see row ~ . ) the . is nothing  or we can even add multiple matrix combos (.~x1 + x2) 
 ```
+
+faceting
+========
+
+``` r
+mpg %>% 
+  ggplot(aes( x = cyl, group = class, fill = class))+
+  geom_histogram(binwidth = 1, color = "black")+
+  facet_wrap(~class)+
+  theme_bw()
+```
+
+![](ggplot_day1_2_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-8-1.png)
+
+ggplot day 2
+============
+
+talks about scaling:
+
+\#c("fixed", "free\_x", "free\_y", "free")) : 'arg' should be one of “fixed”, “free\_x”, “free\_y”, “free”
+
+``` r
+mpg %>% 
+  ggplot(aes( x = cyl, group = class, fill = class))+
+  geom_histogram(binwidth = 1, color = "black")+
+  facet_wrap(~class, scales = "free_x")+
+  theme_bw()
+```
+
+![](ggplot_day1_2_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-9-1.png)
+
+``` r
+msleep %>% 
+  ggplot(aes(x = sleep_cycle, y = sleep_total, color = vore)) +
+  geom_point()+
+  ggtitle("how things sleep")+
+  xlab("Sleep Cycle")+
+  ylab("Total amount of sleep")+
+  scale_colour_manual( name = "Diet", #this will allow us to pick what we want in the legend
+                       values = c("red", "blue", "green", "black"),
+                       breaks = c("carni", "herbi", "insecti","omni"))
+```
+
+    ## Warning: Removed 52 rows containing missing values (geom_point).
+
+![](ggplot_day1_2_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-10-1.png) \# lets add some color:
+
+``` r
+display.brewer.all()
+```
+
+![](ggplot_day1_2_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-11-1.png)
+
+``` r
+msleep %>% 
+  ggplot(aes(x= brainwt, fill = vore))+
+  geom_histogram(binwidth = 1 )+
+  scale_x_log10()+
+  scale_fill_brewer("RDGry")
+```
+
+    ## Warning: Removed 27 rows containing non-finite values (stat_bin).
+
+![](ggplot_day1_2_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-12-1.png)
+
+how to work with positioning:
+=============================
+
+``` r
+diamonds %>% 
+  ggplot(aes(color, fill = cut))+
+  geom_bar(position = "dodge")
+```
+
+![](ggplot_day1_2_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-13-1.png)
+
+``` r
+mpg %>% 
+ggplot(aes(x= cty, y = hwy))+
+  geom_point()+
+  geom_text(aes(label = class ))+
+  annotate("label", 15, 40, label = "this is not a drill") #the "lable" will give us a outlined box!
+```
+
+![](ggplot_day1_2_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-14-1.png) exercise:
+
+``` r
+msleep %>% 
+  ggplot(aes(x = sleep_total, y =bodywt))+
+  geom_text(aes(label = genus, color = genus))+
+  scale_y_log10()+
+  theme(legend.position = "")
+```
+
+![](ggplot_day1_2_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-15-1.png)
+
+exerice with overplotting:
+==========================
+
+``` r
+diamonds %>% 
+  ggplot(aes(x = carat, y = price))+
+  geom_point(alpha = 0.2)
+```
+
+![](ggplot_day1_2_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-16-1.png)
+
+``` r
+ggsave("plot.pdf", device = "pdf")
+```
+
+    ## Saving 7 x 5 in image
+
+![](plot.pdf)
